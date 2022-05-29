@@ -1,6 +1,5 @@
 import axios from "axios"
-
-import { usersListData } from "../../data/users";
+import useSWR from "swr";
 
 const UserItem = (props) => {
     return (
@@ -17,24 +16,22 @@ const UserItem = (props) => {
     )
 }
 
+const fetcher = (url) => {
+    return axios.get(url).then(res => res.data)
+}
+
 const UsersList = () => {
 
-    const fetchData = () => {
-        console.log("fetching the data")
-        axios({
-          method: "GET",
-          url: "https://reqres.in/api/users",
-        })
-          .then(response => console.log(response.data.data))
-          .catch(error => console.log(error))
-      }
+    const { data: fetchedUsersList, error } = useSWR('https://reqres.in/api/users', fetcher)
+
+    if (error) return <div>failed to load</div>
+    if (!fetchedUsersList) return <div>loading...</div>
 
     return (
         <div>
             <h2>Users Lists</h2>
-            <button onClick={fetchData}> Refresh List</button>
 
-            {usersListData.map((user) => {
+            {(fetchedUsersList?.data ?? []).map((user) => {
                 return <UserItem key={user.id} {...user} />
             })}
         </div>

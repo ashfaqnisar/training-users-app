@@ -1,7 +1,18 @@
-import { specificUserData } from "../../data/users";
+import axios from "axios";
+import useSWR from "swr";
+
+const fetcher = (url) => {
+    return axios.get(url).then(res => res.data)
+}
 
 const UserDetail = () => {
-    const userData = specificUserData;
+    const { data: fetchedUser, error } = useSWR('https://reqres.in/api/users/10', fetcher)
+
+    if (error) return <div>failed to load</div>
+    if (!fetchedUser) return <div>loading...</div>
+
+    const userData = fetchedUser?.data ?? {};
+
     return (
         <div>
             <h2>Users Detail</h2>
