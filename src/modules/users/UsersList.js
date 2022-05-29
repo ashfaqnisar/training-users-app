@@ -1,12 +1,25 @@
 import axios from "axios"
 import useSWR from "swr";
+import { useNavigate } from "react-router-dom";
 
 const UserItem = (props) => {
+
+    const navigate = useNavigate();
+
+    const handleUserClick = () => {
+        navigate(`/users/${props.id}`)
+    }
+
     return (
-        <div style={{
-            marginTop: 15,
-            marginBottom: 15
-        }}>
+        <div 
+            style={{
+                marginTop: 15,
+                marginBottom: 15, 
+                cursor: "pointer", 
+                display: "inline-block"
+            }} 
+            onClick={handleUserClick}
+        >
             <img src={props.avatar} alt="avatar" />
             <h3>
                 {props?.first_name ?? ""} {props?.last_name ?? ""}

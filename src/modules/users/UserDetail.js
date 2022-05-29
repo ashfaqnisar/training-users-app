@@ -1,15 +1,20 @@
 import axios from "axios";
 import useSWR from "swr";
+import { useParams } from "react-router-dom";
 
 const fetcher = (url) => {
     return axios.get(url).then(res => res.data)
 }
 
 const UserDetail = () => {
-    const { data: fetchedUser, error } = useSWR('https://reqres.in/api/users/10', fetcher)
+    const params = useParams();
 
-    if (error) return <div>failed to load</div>
+    const {id} = params;
+
+    const { data: fetchedUser, error } = useSWR(`https://reqres.in/api/users/${id}`, fetcher)
+
     if (!fetchedUser) return <div>loading...</div>
+    if (error) return <div>failed to load</div>
 
     const userData = fetchedUser?.data ?? {};
 
